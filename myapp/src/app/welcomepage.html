@@ -29,10 +29,31 @@
             font-size: 27.5px;
             text-align: center;
         }
+        .btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 80%;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.205);
+        }
     </style>
 </head>
 <body>
     <h2>Login Successful</h2>
     <p>Welcome, admin.</p>
+    <button class="btn" onclick="goToMenu()">Ir al Menú</button>
+
+    <script>
+        // Función para redirigir al menú sin cerrar la sesión
+        function goToMenu() {
+            window.location.href = "menu.html";
+        }
+    </script>
 </body>
 </html>

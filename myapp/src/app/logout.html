@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <script>
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem("loggedIn");
+            window.location.href = "app.component.html";
+        }
+        window.onload = logout;
+    </script>
+</head>
+<body>
+    <p>Cerrando sesión...</p>
+</body>
+</html>

@@ -4,21 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <!-- Google Fonts (using 'Roboto' font here) -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Background image for the entire page */
         body {
-            font-family: 'Roboto', sans-serif; /* Using Google Font */
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-image: url('https://media.istockphoto.com/id/592031250/photo/milky-way-and-pink-light-at-mountains-night-colorful-landscape.jpg?s=612x612&w=0&k=20&c=MlBuwRU4M-eZda80ONcdV9NbwtyJQrvggug31A6vLJU='); /* Replace with your image URL */
+            background-image: url('https://media.istockphoto.com/id/592031250/photo/milky-way-and-pink-light-at-mountains-night-colorful-landscape.jpg?s=612x612&w=0&k=20&c=MlBuwRU4M-eZda80ONcdV9NbwtyJQrvggug31A6vLJU=');
             background-size: cover;
             background-position: center;
-            color: #fff; /* White text for visibility over background */
+            color: #fff;
             flex-direction: column;
         }
         h2 {
@@ -90,7 +88,9 @@
             const messageDiv = document.getElementById('message');
 
             if (username === validUsername && password === validPassword) {
-                window.location.href = "welcomepage.html";
+                // Guardamos que el usuario está logueado en el localStorage
+                localStorage.setItem("loggedIn", true);
+                window.location.href = "welcomepage.html"; // Redirigir a la página de bienvenida
             } else {
                 messageDiv.textContent = "Error: Invalid Username or Password";
                 messageDiv.className = 'message error';
