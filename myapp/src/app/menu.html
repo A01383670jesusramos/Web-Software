@@ -48,6 +48,18 @@
         .menu a:hover {
             background-color: #bbb;
         }
+        .pokemon-info {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+        }
+        .pokemon-info img {
+            max-width: 100%;
+            height: auto;
+        }
+        .stats {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +79,9 @@
         <a href="page2.html">Página 2</a>
         <a href="page3.html" id="protectedPage">Página 3</a>
     </div>
+
+    <!-- Añade un elemento main para mostrar la información del Pokémon -->
+    <main></main>
 
     <script>
         // Verificar si el usuario inició y actualizar el menú
@@ -98,7 +113,54 @@
             }
         }
 
-        window.onload = updateLoginLogoutButton;
+        window.onload = function() {
+            updateLoginLogoutButton();
+            fetchPokemonData(); // Llamar a fetchPokemonData después de que el DOM esté completamente cargado
+        };
+
+        function fetchPokemonData() {
+            fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
+                .then(response => response.json())
+                .then(data => {
+                    displayPokemonData(data);
+                })
+                .catch(error => console.error('Error fetching Pokémon data:', error));
+        }
+
+        function displayPokemonData(pokemon) {
+            const main = document.querySelector('main');
+            const pokemonInfo = document.createElement('div');
+            pokemonInfo.className = 'pokemon-info';
+
+            const name = document.createElement('h2');
+            name.textContent = pokemon.name;
+
+            const image = document.createElement('img');
+            image.src = pokemon.sprites.front_default;
+            image.alt = pokemon.name;
+
+            const abilities = document.createElement('p');
+            abilities.textContent = 'Abilities: ' + pokemon.abilities.map(ability => ability.ability.name).join(', ');
+
+            const statsSection = document.createElement('div');
+            statsSection.className = 'stats';
+            const statsTitle = document.createElement('h3');
+            statsTitle.textContent = 'Stats:';
+            statsSection.appendChild(statsTitle);
+
+            pokemon.stats.forEach(stat => {
+                const statText = document.createElement('p');
+                statText.textContent = `${stat.stat.name}: ${stat.base_stat}`;
+                statsSection.appendChild(statText);
+            });
+
+            pokemonInfo.appendChild(name);
+            pokemonInfo.appendChild(image);
+            pokemonInfo.appendChild(abilities);
+            pokemonInfo.appendChild(statsSection);
+
+            main.appendChild(pokemonInfo);
+        }
     </script>
 </body>
 </html>

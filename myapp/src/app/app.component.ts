@@ -1,12 +1,16 @@
+// app.component.ts
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { routes } from './app.routes'; // Importa las rutas
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [RouterModule], // Importa RouterModule
+  template: `<router-outlet></router-outlet>`, // Usa <router-outlet> para renderizar las vistas
 })
 export class AppComponent {
-  title = 'myapp';
+  title(title: any) {
+    throw new Error('Method not implemented.');
+  }
 }
