@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Forgot Password</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -72,48 +72,18 @@
             font-size: 14px;
             width: 80%;
         }
-        .success {
-            color: white;
-        }
-        .error {
-            color: white;
-        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Username" required><br>
-            <input type="password" id="password" placeholder="Password" required><br>
-            <button type="submit" class="btn">Login</button>
+        <h2>Forgot Password</h2>
+        <form id="forgotPasswordForm">
+            <input type="email" id="email" placeholder="Email" required><br>
+            <button type="submit" class="btn">Reset Password</button>
         </form>
         <div class="message">
-            <button onclick="window.location.href='register.html'" class="btn">Create an account</button>
-            <button onclick="window.location.href='recovpass.html'" class="btn-small">Forgot Password?</button>
+            <button onclick="window.location.href='app.component.html'" class="btn">Back to Login</button>
         </div>
-        <div id="message" class="message"></div>
     </div>
-
-    <script>
-        const validUsername = "admin";
-        const validPassword = "1234";
-
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const messageDiv = document.getElementById('message');
-
-            if (username === validUsername && password === validPassword) {
-                localStorage.setItem("loggedIn", true);
-                window.location.href = "welcomepage.html";
-            } else {
-                messageDiv.textContent = "Error: Invalid Username or Password";
-                messageDiv.className = 'message error';
-            }
-        });
-    </script>
 </body>
 </html>
