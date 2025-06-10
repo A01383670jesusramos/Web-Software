@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -54,6 +55,25 @@
         function goToMenu() {
             window.location.href = "menu.html";
         }
+
+        const supabaseUrl = 'https://frypddcxlsrjuiergjuu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyeXBkZGN4bHNyanVpZXJnanV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyMDE1MDcsImV4cCI6MjA1ODc3NzUwN30.sBFRAYKsE1coJTwoD0PLP2E8UsRaL3fWjXsT2oy-liY';
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (!user) {
+              // Si NO está autenticado, redirige al login
+              window.location.href = "app.component.html";
+            } else {
+              // Si está autenticado, muestra el menú con su nombre
+              document.getElementById("welcomeMessage").textContent = `¡Bienvenido, ${user.user_metadata.username || user.email}!`;
+              document.getElementById("loginButton").style.display = "none"; // Oculta botón de login
+            }
+          }
+        
+          checkAuth();
     </script>
 </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -96,24 +97,43 @@
     </div>
 
     <script>
-        const validUsername = "admin";
-        const validPassword = "1234";
+        const supabaseUrl = 'https://frypddcxlsrjuiergjuu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyeXBkZGN4bHNyanVpZXJnanV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyMDE1MDcsImV4cCI6MjA1ODc3NzUwN30.sBFRAYKsE1coJTwoD0PLP2E8UsRaL3fWjXsT2oy-liY';
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const messageDiv = document.getElementById('message');
-
-            if (username === validUsername && password === validPassword) {
-                localStorage.setItem("loggedIn", true);
-                window.location.href = "welcomepage.html";
-            } else {
-                messageDiv.textContent = "Error: Invalid Username or Password";
-                messageDiv.className = 'message error';
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+          
+            // 1. Buscar email asociado al username
+            const { data: profile, error: profileError } = await supabase
+              .from("profiles")
+              .select("email, user_id")
+              .eq("username", username)
+              .single();
+          
+            if (profileError || !profile) {
+              alert("Usuario no encontrado");
+              return;
             }
-        });
+          
+            // 2. Iniciar sesión
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: profile.email,
+              password: password
+            });
+          
+            if (error) {
+              console.error("Detalle del error:", error);
+              alert("Error: Credenciales incorrectas o usuario no verificado");
+            } else {
+              localStorage.setItem("user", JSON.stringify(data.user));
+              window.location.href = "welcomepage.html";
+            }
+          });
     </script>
+    
 </body>
 </html>

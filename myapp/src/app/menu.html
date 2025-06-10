@@ -5,112 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon List</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('https://media.istockphoto.com/id/592031250/photo/milky-way-and-pink-light-at-mountains-night-colorful-landscape.jpg?s=612x612&w=0&k=20&c=MlBuwRU4M-eZda80ONcdV9NbwtyJQrvggug31A6vLJU=');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: white;
-        }
-        header {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-        header .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header .nav-container a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
-        .menu {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        .menu a {
-            margin: 0 20px;
-            font-size: 20px;
-            color: #333;
-            text-decoration: none;
-            padding: 10px 20px;
-            background-color: #ddd;
-            border-radius: 5px;
-        }
-        .menu a:hover {
-            background-color: #bbb;
-        }
-        .pokemon-list {
-            margin: 20px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-        }
-        .pokemon-list h2 {
-            text-align: center;
-        }
-        .pokemon-item {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-        }
-        .pokemon-item img {
-            width: 100px;
-            height: 100px;
-            margin-right: 20px;
-        }
-        .pokemon-item h3 {
-            margin: 0;
-        }
-        .search-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .search-container input {
-            padding: 10px;
-            width: 300px;
-            border-radius: 5px;
-            border: none;
-        }
-        .search-container button {
-            padding: 10px 20px;
-            background-color: #ddd;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .search-container button:hover {
-            background-color: #bbb;
-        }
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .pagination button {
-            margin: 0 5px;
-            padding: 5px 10px;
-            background-color: #ddd;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .pagination button:hover {
-            background-color: #bbb;
-        }
-    </style>
+    <link rel="stylesheet" href="menu.css">
 </head>
 <body>
     <header>
@@ -119,16 +14,17 @@
                 <h1>Pokémon List</h1>
             </div>
             <div>
-                <a href="javascript:void(0)" id="loginLogoutButton" onclick="toggleLoginLogout()">Iniciar sesión</a>
+                <a id="loginLogoutButton" onclick="toggleLoginLogout()">Iniciar sesión</a>
             </div>
         </div>
     </header>
 
-    <div class="menu">
+    <!-- Barra de navegación mejorada -->
+    <nav class="navbar">
         <a href="page1.html">Página 1</a>
         <a href="page2.html">Página 2</a>
         <a href="page3.html" id="protectedPage">Página 3</a>
-    </div>
+    </nav>
 
     <!-- Contenedor para la lista de Pokémon -->
     <div class="pokemon-list">
@@ -138,7 +34,7 @@
             <button onclick="searchPokemon()">Buscar</button>
         </div>
         <div id="pokemonContainer"></div>
-        <div class="pagination" id="pagination">
+        <div class="pagination">
             <button id="prevPage">Anterior</button>
             <button id="nextPage">Siguiente</button>
         </div>
@@ -149,7 +45,6 @@
         const pokemonPerPage = 5;
         let allPokemon = [];
 
-        // Verificar si el usuario inició y actualizar el menú
         function updateLoginLogoutButton() {
             const isLoggedIn = localStorage.getItem("loggedIn");
             const loginLogoutButton = document.getElementById("loginLogoutButton");
@@ -157,14 +52,13 @@
 
             if (isLoggedIn) {
                 loginLogoutButton.textContent = "Cerrar sesión";
-                protectedPage.style.pointerEvents = "auto";
+                protectedPage.style.opacity = "1";
             } else {
                 loginLogoutButton.textContent = "Iniciar sesión";
-                protectedPage.style.pointerEvents = "none";
+                protectedPage.style.opacity = "0.6";
             }
         }
 
-        // Función login/logout
         function toggleLoginLogout() {
             const isLoggedIn = localStorage.getItem("loggedIn");
             if (isLoggedIn) {
@@ -175,18 +69,17 @@
             }
         }
 
-        // Lista de Pokemon
         function fetchPokemonList() {
             fetch('https://pokeapi.co/api/v2/pokemon?limit=30')
                 .then(response => response.json())
                 .then(data => {
                     allPokemon = data.results;
                     displayPokemonPage(currentPage);
+                    updatePaginationButtons();
                 })
                 .catch(error => console.error('Error fetching Pokémon list:', error));
         }
 
-        // Mostrar una página
         function displayPokemonPage(page) {
             const pokemonContainer = document.getElementById("pokemonContainer");
             pokemonContainer.innerHTML = "";
@@ -212,11 +105,14 @@
                         name.textContent = data.name;
 
                         const abilities = document.createElement("p");
-                        abilities.textContent = "Abilities: " + data.abilities.map(ability => ability.ability.name).join(", ");
+                        abilities.textContent = "Habilidades: " + 
+                            data.abilities.map(ability => ability.ability.name).join(", ");
 
                         const stats = document.createElement("div");
-                        stats.innerHTML = "<strong>Stats:</strong><br>" +
-                            data.stats.map(stat => `${stat.stat.name}: ${stat.base_stat}`).join("<br>");
+                        stats.innerHTML = "<strong>Estadísticas:</strong><br>" +
+                            data.stats.map(stat => 
+                                `${stat.stat.name}: ${stat.base_stat}`
+                            ).join("<br>");
 
                         info.appendChild(name);
                         info.appendChild(abilities);
@@ -227,9 +123,15 @@
                         pokemonContainer.appendChild(pokemonItem);
                     });
             });
+            updatePaginationButtons();
         }
 
-        // Cambiar página
+        function updatePaginationButtons() {
+            document.getElementById("prevPage").disabled = currentPage === 0;
+            document.getElementById("nextPage").disabled = 
+                (currentPage + 1) * pokemonPerPage >= allPokemon.length;
+        }
+
         function changePage(direction) {
             if (direction === "prev" && currentPage > 0) {
                 currentPage--;
@@ -239,20 +141,17 @@
             displayPokemonPage(currentPage);
         }
 
-        // Buscar Pokemon
         function searchPokemon() {
-            const searchInput = document.getElementById("searchInput").value.toLowerCase();
+            const searchInput = document.getElementById("searchInput").value.toLowerCase().trim();
             if (searchInput) {
                 fetch(`https://pokeapi.co/api/v2/pokemon/${searchInput}`)
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Pokémon no encontrado');
-                        }
+                        if (!response.ok) throw new Error('Pokémon no encontrado');
                         return response.json();
                     })
                     .then(data => {
                         const pokemonContainer = document.getElementById("pokemonContainer");
-                        pokemonContainer.innerHTML = ""; // Limpiar el contenedor
+                        pokemonContainer.innerHTML = "";
 
                         const pokemonItem = document.createElement("div");
                         pokemonItem.className = "pokemon-item";
@@ -267,11 +166,14 @@
                         name.textContent = data.name;
 
                         const abilities = document.createElement("p");
-                        abilities.textContent = "Abilities: " + data.abilities.map(ability => ability.ability.name).join(", ");
+                        abilities.textContent = "Habilidades: " + 
+                            data.abilities.map(ability => ability.ability.name).join(", ");
 
                         const stats = document.createElement("div");
-                        stats.innerHTML = "<strong>Stats:</strong><br>" +
-                            data.stats.map(stat => `${stat.stat.name}: ${stat.base_stat}`).join("<br>");
+                        stats.innerHTML = "<strong>Estadísticas:</strong><br>" +
+                            data.stats.map(stat => 
+                                `${stat.stat.name}: ${stat.base_stat}`
+                            ).join("<br>");
 
                         info.appendChild(name);
                         info.appendChild(abilities);
@@ -283,13 +185,12 @@
                     })
                     .catch(error => {
                         alert(error.message);
-                        console.error('Error fetching Pokémon:', error);
+                        console.error('Error:', error);
                     });
             } else {
-                alert("Por favor, ingresa un nombre de Pokémon.");
+                displayPokemonPage(currentPage);
             }
         }
-
 
         window.onload = function() {
             updateLoginLogoutButton();
@@ -297,6 +198,10 @@
 
             document.getElementById("prevPage").addEventListener("click", () => changePage("prev"));
             document.getElementById("nextPage").addEventListener("click", () => changePage("next"));
+            
+            document.getElementById("searchInput").addEventListener("keypress", (e) => {
+                if (e.key === "Enter") searchPokemon();
+            });
         };
     </script>
 </body>

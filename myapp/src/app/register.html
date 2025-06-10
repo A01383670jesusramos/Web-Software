@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -85,6 +86,7 @@
     <div class="login-container">
         <h2>Register</h2>
         <form id="registerForm">
+            <input type="text" id="username" placeholder="Username" required><br>
             <input type="text" id="name" placeholder="Full Name" required><br>
             <input type="email" id="email" placeholder="Email" required><br>
             <input type="date" id="dob" placeholder="Date of Birth" required><br>
@@ -97,4 +99,70 @@
         </div>
     </div>
 </body>
+
+<script>
+    const supabaseUrl = 'https://frypddcxlsrjuiergjuu.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyeXBkZGN4bHNyanVpZXJnanV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyMDE1MDcsImV4cCI6MjA1ODc3NzUwN30.sBFRAYKsE1coJTwoD0PLP2E8UsRaL3fWjXsT2oy-liY';
+    window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+      
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+      
+        if (password !== confirmPassword) {
+          alert("Las contraseñas no coinciden");
+          return;
+        }
+      
+        try {
+          const { data: authData, error: authError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                username,
+                full_name: document.getElementById("name").value,
+                dob: document.getElementById("dob").value
+              }
+            }
+          });
+      
+          if (authError) throw authError;
+      
+          const { error: dbError } = await supabase
+            .from("profiles")
+            .insert([{
+              user_id: authData.user.id,
+              username,
+              email
+            }]);
+      
+          if (dbError) throw dbError;
+      
+          alert("¡Registro exitoso! Por favor verifica tu email.");
+          window.location.href = "app.component.html";
+      
+        } catch (error) {
+          console.error("Error en registro:", error);
+          alert(`Error: ${error.message}`);
+        }
+
+        const { data: existingUser } = await supabase
+            .from("profiles")
+            .select()
+            .eq("username", username);
+
+        if (existingUser) {
+            alert("Este username ya está en uso");
+            return;
+        }
+
+      });
+</script>
+
+
 </html>
